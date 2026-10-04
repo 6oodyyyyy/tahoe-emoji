@@ -33,14 +33,14 @@ APP_DATA_DIR = os.path.join(os.environ.get('APPDATA', os.path.expanduser('~')),
 CONFIG_PATH = os.path.join(APP_DATA_DIR, 'config.json')
 RECENTS_PATH = os.path.join(APP_DATA_DIR, 'recents.json')
 
-WIN_W, WIN_H = 384, 444          # outer transparent window size
-NUB_TIP_X, NUB_TIP_Y = 192, 15   # nub tip position inside the window
+WIN_W, WIN_H = 364, 700          # outer transparent window size (CSS px)
+NUB_TIP_X, NUB_TIP_Y = 182, 12   # nub tip position inside the window
 MAX_RECENTS = 32
 
 DEFAULT_CONFIG = {
     'hotkey': 'windows+.',
     'accent': '#0A84FF',
-    'lastCategory': 'recent',
+    'lastCategory': 0,
 }
 
 state = {
@@ -246,6 +246,27 @@ def _caret_screen_pos():
         return None
 
 
+def _dpi_scale():
+    """System DPI scale factor (1.0 at 96 DPI).
+
+    The pywebview window size is in physical pixels while the WebView2 CSS
+    viewport is in DPI-scaled pixels; without this the UI gets clipped on
+    displays above 100% scaling (the reported cut-off bottom bar).
+    """
+    try:
+        shcore = ctypes.windll.shcore
+        shcore.GetDpiForSystem.argtypes = []
+        shcore.GetDpiForSystem.restype = wintypes.UINT
+        return max(1.0, shcore.GetDpiForSystem() / 96.0)
+    except Exception:
+        return 1.0
+
+
+def _win_size():
+    s = state.get('dpi_scale', 1.0)
+    return (int(WIN_W * s), int(WIN_H * s))
+
+
 def _work_area():
     rect = wintypes.RECT()
     _user32.SystemParametersInfoW(0x30, 0, ctypes.byref(rect), 0)
@@ -260,12 +281,13 @@ def _pick_position():
         except Exception:
             pos = (500, 300)
     cx, cy = pos
-    x = cx - NUB_TIP_X
+    win_w, win_h = _win_size()
+    x = cx - NUB_TIP_X * state.get('dpi_scale', 1.0)
     y = cy - NUB_TIP_Y - 2
     wa_l, wa_t, wa_r, wa_b = _work_area()
-    x = max(wa_l, min(x, wa_r - WIN_W))
-    y = max(wa_t, min(y, wa_b - WIN_H))
-    return (x, y)
+    x = max(wa_l, min(x, wa_r - win_w))
+    y = max(wa_t, min(y, wa_b - win_h))
+    return (int(x), int(y))
 
 
 # ------------------------------------------------------------- show / hide ----
@@ -334,7 +356,8 @@ def _on_outside_click(*_args):
     except Exception:
         return
     wx, wy = state['win_x'], state['win_y']
-    if not (wx <= x < wx + WIN_W and wy <= y < wy + WIN_H):
+    win_w, win_h = _win_size()
+    if not (wx <= x < wx + win_w and wy <= y < wy + win_h):
         hide_picker()
 
 
@@ -411,11 +434,16 @@ def main():
     # navigation start, ignoring hidden=True (startup flash). Creating it far
     # off-screen keeps that flash invisible; show_picker() moves it to the
     # caret before the first real show().
+    # Window size is scaled by the system DPI so the CSS viewport (in
+    # DPI-scaled pixels) always matches the physical window — otherwise the
+    # UI is clipped on >100% display scaling.
+    state['dpi_scale'] = _dpi_scale() if sys.platform == 'win32' else 1.0
+    win_w, win_h = _win_size()
     window = webview.create_window(
         'TahoeEmojiPicker',
         index_path,
-        width=WIN_W,
-        height=WIN_H,
+        width=win_w,
+        height=win_h,
         x=-32000,
         y=-32000,
         frameless=True,

@@ -1,7 +1,7 @@
 /* Tahoe emoji picker — UI logic */
 (function () {
   'use strict';
-  var COLS = 6;
+  var COLS = 5;
   var HOLD_MS = 450;
 
   /* ---------- SF-Symbol-style outline icons (stroke 1.5, round caps) ---------- */
@@ -22,10 +22,10 @@
     more: ic('<polyline points="8 6 13 12 8 18"/><polyline points="13 6 18 12 13 18"/>')
   };
 
-  /* Tabs: recent + 8 groups (group index into EMOJI_DATA g) + expand */
+  /* Tabs: Tahoe order — Smileys first, then Recents, then groups */
   var TABS = [
-    { id: 'recent', icon: 'clock', name: 'Frequently Used' },
     { id: 0, icon: 'smiley', name: 'Smileys & People' },
+    { id: 'recent', icon: 'clock', name: 'Frequently Used' },
     { id: 1, icon: 'paw', name: 'Animals & Nature' },
     { id: 2, icon: 'apple', name: 'Food & Drink' },
     { id: 3, icon: 'soccer', name: 'Activity' },
@@ -42,7 +42,7 @@
      to the mock (Esc / insert then silently do nothing). Bind lazily. */
   var MOCK = {
     getRecents: function () { return Promise.resolve(['\uD83D\uDE00', '\uD83D\uDE02', '\u2764\uFE0F', '\uD83D\uDC4D', '\uD83C\uDF89']); },
-    getConfig: function () { return Promise.resolve({ accent: '#0A84FF', lastCategory: 'recent' }); },
+    getConfig: function () { return Promise.resolve({ accent: '#0A84FF', lastCategory: 0 }); },
     addRecent: function () { return Promise.resolve(); },
     setLastCategory: function () { return Promise.resolve(); },
     insert: function (e) { console.log('[mock] insert', e); return Promise.resolve(); },
@@ -60,8 +60,8 @@
 
   /* ---------- state ---------- */
   var recents = [];
-  var lastCat = 'recent';
-  var cat = 'recent';
+  var lastCat = 0;
+  var cat = 0;
   var query = '';
   var items = [];   /* currently displayed emoji objects */
   var hi = -1;      /* keyboard highlight index */
@@ -200,7 +200,7 @@
     var cr = cell.getBoundingClientRect();
     var pw = variants.length * 46 + 10;
     var left = cr.left - pr.left + cr.width / 2 - pw / 2;
-    left = Math.max(6, Math.min(left, 356 - pw - 6));
+    left = Math.max(6, Math.min(left, 336 - pw - 6));
     var top = cr.top - pr.top - 56;
     if (top < 4) top = cr.top - pr.top + cr.height + 6;
     tonePop.style.left = left + 'px';
