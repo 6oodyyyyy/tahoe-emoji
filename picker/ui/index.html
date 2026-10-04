@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TahoeEmojiPicker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="stage">
+  <div class="panel-wrap">
+    <div class="nub"></div>
+    <div class="panel" id="panel">
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/>
+        </svg>
+        <input id="search" class="search" type="text" placeholder="Search" autocomplete="off" spellcheck="false">
+        <button id="clearBtn" class="clear-btn" hidden aria-label="Clear">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="9" fill="currentColor" stroke="none" opacity="0.25"/>
+            <line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/>
+          </svg>
+        </button>
+      </div>
+      <div class="grid" id="grid" tabindex="-1">
+        <div class="grid-inner" id="gridInner"></div>
+      </div>
+      <div class="catbar" id="catbar"></div>
+      <div class="tone-pop" id="tonePop" hidden></div>
+    </div>
+  </div>
+</div>
+<script src="emoji-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+/* macOS Tahoe mini emoji-picker clone — light & dark */
+:root {
+  --accent: #0A84FF;
+  --accent-soft: rgba(10, 132, 255, 0.18);
+  --accent-pressed: rgba(10, 132, 255, 0.28);
+  --panel-bg: #E0DCD8;
+  --search-bg: #D4D0CD;
+  --icon-gray: #6E6A67;
+  --placeholder: #8E8E93;
+  --text: #1A1A1A;
+  --scrollbar: rgba(142, 142, 142, 0.6);
+  --tone-bg: #E0DCD8;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --panel-bg: #333337;
+    --search-bg: #242426;
+    --icon-gray: #9A9AA0;
+    --placeholder: #6E6E73;
+    --text: #F2F2F2;
+    --tone-bg: #333337;
+  }
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/inter-400.woff2") format("woff2");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/inter-500.woff2") format("woff2");
+  font-weight: 500;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 384px; height: 444px; overflow: hidden; background: transparent; }
+body {
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  -webkit-user-select: none; user-select: none;
+}
+
+.stage { position: relative; width: 384px; height: 444px; }
+.panel-wrap {
+  position: absolute; left: 14px; top: 15px; width: 356px;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.28));
+}
+.nub {
+  width: 23px; height: 10px; margin: 0 auto -1px;
+  background: var(--panel-bg);
+  clip-path: polygon(0 100%, 50% 0, 100% 100%);
+}
+.panel {
+  width: 356px; height: 404px;
+  background: var(--panel-bg);
+  border-radius: 12px;
+  display: flex; flex-direction: column;
+  overflow: hidden; position: relative;
+}
+
+/* ---- search ---- */
+.search-wrap { margin: 11px 8px 0; height: 40px; position: relative; flex: none; }
+.search-icon {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px; color: var(--icon-gray); pointer-events: none;
+}
+.search {
+  width: 100%; height: 40px; border: none; outline: none;
+  border-radius: 10px; background: var(--search-bg);
+  padding: 0 34px 0 34px;
+  font-size: 13px; font-family: inherit; color: var(--text);
+}
+.search::placeholder { color: var(--placeholder); }
+.search:focus { box-shadow: 0 0 0 3px var(--accent); }
+.clear-btn {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  width: 20px; height: 20px; border: none; background: none;
+  color: var(--icon-gray); cursor: pointer; padding: 0;
+}
+.clear-btn svg { width: 20px; height: 20px; display: block; }
+
+/* ---- grid ---- */
+.grid { flex: 1; margin-top: 8px; overflow-y: auto; overflow-x: hidden; outline: none; }
+.grid::-webkit-scrollbar { width: 5px; }
+.grid::-webkit-scrollbar-track { background: transparent; }
+.grid::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 3px; }
+.grid-inner {
+  width: 324px; margin: 0 auto; padding-bottom: 6px;
+  display: grid; grid-template-columns: repeat(6, 54px);
+}
+.cell {
+  width: 54px; height: 54px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px; cursor: default;
+}
+.cell .hit {
+  width: 50px; height: 50px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; line-height: 1;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+.cell:hover .hit { background: var(--accent-soft); }
+.cell.kb .hit { background: var(--accent-soft); }
+.cell:active .hit { background: var(--accent-pressed); }
+.grid-empty {
+  grid-column: 1 / -1; text-align: center; color: var(--placeholder);
+  font-size: 13px; padding: 24px 0;
+}
+
+/* ---- category bar ---- */
+.catbar {
+  flex: none; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+}
+.cat {
+  width: 35px; height: 35px; border: none; background: none; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--icon-gray); cursor: pointer; border-radius: 8px;
+}
+.cat svg { width: 17px; height: 19px; display: block; }
+.cat:hover { color: var(--text); }
+.cat.active { color: var(--accent); }
+.cat.active:hover { color: var(--accent); }
+
+/* ---- skin-tone popover ---- */
+.tone-pop {
+  position: absolute; z-index: 50;
+  background: var(--tone-bg); border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  padding: 5px; display: flex; gap: 2px;
+}
+.tone-pop .cell { width: 44px; height: 44px; }
+.tone-pop .cell .hit { width: 40px; height: 40px; font-size: 28px; }

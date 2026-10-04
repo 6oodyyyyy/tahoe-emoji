@@ -1,0 +1,92 @@
+name: build-exe
+
+# Builds real Windows .exe files with PyInstaller and smoke-tests them:
+#   dist/TahoeEmojiPicker.exe  - the background picker (no console, no Python needed)
+#   dist/TahoeSettings.exe     - macOS-style installer & settings app (installer only,
+#                                does not need to stay running)
+
+on:
+  push:
+    paths:
+      - 'picker/**'
+      - 'manager/**'
+      - 'font-swap/**'
+      - 'tests/test_manager.py'
+      - 'tests/test_picker.py'
+      - '.github/workflows/build-exe.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install build deps
+        run: pip install pyinstaller pywebview keyboard mouse pillow mss
+
+      - name: Prepare picker assets (emoji data + UI font)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force picker/data, picker/ui/fonts | Out-Null
+          curl.exe -sL -o picker/data/iamcal-emoji.json https://raw.githubusercontent.com/iamcal/emoji-data/master/emoji.json
+          curl.exe -sL -o picker/ui/fonts/inter-400.woff2 https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.woff2
+          curl.exe -sL -o picker/ui/fonts/inter-500.woff2 https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-500-normal.woff2
+          python picker/tools/build_emoji_data.py
+
+      - name: Build picker exe
+        run: pyinstaller --noconfirm --onefile --noconsole --name TahoeEmojiPicker --add-data "picker/ui;ui" picker/picker.py
+
+      - name: Build settings exe
+        run: pyinstaller --noconfirm --onefile --noconsole --name TahoeSettings --add-data "manager/ui;ui" --add-data "dist/TahoeEmojiPicker.exe;picker" --add-data "font-swap/Install-AppleEmoji.ps1;fontswap" --add-data "font-swap/Restore-AppleEmoji.ps1;fontswap" manager/manager.py
+
+      - name: Smoke-test picker exe (hotkey + screenshots)
+        env:
+          PICKER_EXE: ${{ github.workspace }}\dist\TahoeEmojiPicker.exe
+        run: python tests/test_picker.py
+
+      - name: Screenshot settings app
+        env:
+          SETTINGS_EXE: ${{ github.workspace }}\dist\TahoeSettings.exe
+        run: python tests/test_manager.py
+
+      - name: Upload exes and screenshots
+        id: upload-unsigned
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-exes
+          path: |
+            dist/TahoeEmojiPicker.exe
+            dist/TahoeSettings.exe
+            tests/out/
+
+      # Free code signing via SignPath Foundation (signpath.io/open-source).
+      # One-time setup by the repo owner: apply at signpath.io, then set the
+      # SIGNPATH_API_TOKEN secret and the SIGNPATH_ORGANIZATION_ID /
+      # SIGNPATH_PROJECT_SLUG / SIGNPATH_POLICY_SLUG variables.
+      # Until then this step is skipped and the build stays unsigned.
+      - name: Sign exes with SignPath
+        id: signpath
+        if: always() && vars.SIGNPATH_ORGANIZATION_ID != ''
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.upload-unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-exes
+
+      - name: Upload signed exes
+        if: always() && steps.signpath.conclusion == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-exes-signed
+          path: signed-exes/

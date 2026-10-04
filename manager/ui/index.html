@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tahoe Emoji Settings</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="window">
+  <!-- macOS titlebar -->
+  <div class="titlebar" id="titlebar">
+    <div class="traffic">
+      <button class="tl close" id="btnClose" title="Close"><span>×</span></button>
+      <button class="tl min" id="btnMin" title="Minimize"><span>–</span></button>
+      <button class="tl zoom" id="btnZoom" title="Zoom"><span>+</span></button>
+    </div>
+    <div class="titlebar-title">Tahoe Emoji</div>
+  </div>
+
+  <div class="body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="side-search">
+        <input id="sideSearch" type="text" placeholder="Search" autocomplete="off" spellcheck="false">
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-page="picker">
+          <span class="nav-icon picker-ico">
+            <svg viewBox="0 0 24 24" width="18" height="18"><rect x="2" y="6" width="20" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="9" cy="12" r="1.4" fill="currentColor"/><circle cx="15" cy="12" r="1.4" fill="currentColor"/><path d="M9 15.5c1.2 1 4.8 1 6 0" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+          </span>
+          <span>Emoji Picker</span>
+        </button>
+        <button class="nav-item" data-page="font">
+          <span class="nav-icon font-ico">
+            <svg viewBox="0 0 24 24" width="18" height="18"><text x="12" y="17" text-anchor="middle" font-size="15" font-weight="600" fill="currentColor" font-family="system-ui">A</text></svg>
+          </span>
+          <span>Emoji Font</span>
+        </button>
+        <button class="nav-item" data-page="about">
+          <span class="nav-icon about-ico">
+            <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="8" r="1.3" fill="currentColor"/><rect x="11" y="11" width="2" height="6" rx="1" fill="currentColor"/></svg>
+          </span>
+          <span>About</span>
+        </button>
+      </nav>
+      <div class="side-foot">v1.0</div>
+    </aside>
+
+    <!-- Content -->
+    <main class="content">
+      <!-- ============ PICKER PAGE ============ -->
+      <section class="page active" id="page-picker">
+        <h1>Emoji Picker</h1>
+
+        <div class="card">
+          <div class="row">
+            <div class="row-text">
+              <div class="row-title">Status</div>
+              <div class="row-sub" id="pickerStatus">Checking…</div>
+            </div>
+            <button class="btn" id="btnPickerToggle">Install</button>
+          </div>
+        </div>
+
+        <div class="group-title">Options</div>
+        <div class="card">
+          <div class="row">
+            <div class="row-text">
+              <div class="row-title">Start with Windows</div>
+              <div class="row-sub">Open the picker automatically at login</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="tglStartup"><span></span></label>
+          </div>
+          <div class="row">
+            <div class="row-text">
+              <div class="row-title">Keyboard shortcut</div>
+              <div class="row-sub">Press to open the picker anywhere</div>
+            </div>
+            <input class="hotkey" id="inpHotkey" type="text" value="windows+." spellcheck="false">
+          </div>
+          <div class="row">
+            <div class="row-text">
+              <div class="row-title">Accent color</div>
+              <div class="row-sub">Highlight color in the picker</div>
+            </div>
+            <div class="swatches" id="swatches"></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-blue" id="btnShowPicker">Show Picker Now</button>
+        </div>
+        <p class="hint" id="pickerHint"></p>
+      </section>
+
+      <!-- ============ FONT PAGE ============ -->
+      <section class="page" id="page-font">
+        <h1>Emoji Font</h1>
+
+        <div class="card">
+          <div class="row">
+            <div class="row-text">
+              <div class="row-title">Active emoji font</div>
+              <div class="row-sub" id="fontStatus">Checking…</div>
+            </div>
+          </div>
+        </div>
+
+        <p class="desc">
+          Replace the Windows system emoji (Segoe UI Emoji) with Apple-style emoji
+          everywhere in Windows. The original font is backed up first and can be
+          restored at any time. A restart is required after installing.
+        </p>
+
+        <div class="actions">
+          <button class="btn btn-blue" id="btnFontInstall">Install Apple Emoji…</button>
+          <button class="btn" id="btnFontRestore">Restore Windows Emoji…</button>
+        </div>
+        <p class="hint" id="fontHint"></p>
+      </section>
+
+      <!-- ============ ABOUT PAGE ============ -->
+      <section class="page" id="page-about">
+        <h1>About</h1>
+        <div class="card about-card">
+          <div class="about-emoji">😃</div>
+          <div class="about-name">Tahoe Emoji for Windows</div>
+          <div class="about-ver">Version 1.0</div>
+          <p class="desc">A macOS Tahoe-style emoji picker and Apple-style system emoji for Windows 10/11.</p>
+          <div class="actions">
+            <button class="btn" id="btnRepo">GitHub Repository</button>
+          </div>
+          <p class="fine">Apple emoji artwork © Apple Inc. — for personal/educational use.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
