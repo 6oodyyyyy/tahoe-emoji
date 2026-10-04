@@ -1,24 +1,24 @@
-/* macOS Tahoe emoji picker — tall frosted popover, 5-column grid */
+/* macOS Tahoe emoji picker — 6-column grid, matches real macOS design */
 :root {
   --accent: #0A84FF;
   --accent-soft: rgba(10, 132, 255, 0.18);
   --accent-pressed: rgba(10, 132, 255, 0.28);
-  --panel-bg: #E3DFDB;
-  --search-bg: #D5D1CD;
-  --icon-gray: #6E6A67;
+  --panel-bg: #FFFFFF;
+  --search-bg: #F2F2F7;
+  --icon-gray: #8E8E93;
   --placeholder: #8E8E93;
   --text: #1A1A1A;
   --scrollbar: rgba(142, 142, 142, 0.6);
-  --tone-bg: #E3DFDB;
+  --tone-bg: #FFFFFF;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --panel-bg: #333337;
-    --search-bg: #242426;
-    --icon-gray: #9A9AA0;
+    --panel-bg: #1C1C1E;
+    --search-bg: #2C2C2E;
+    --icon-gray: #98989D;
     --placeholder: #6E6E73;
     --text: #F2F2F2;
-    --tone-bg: #333337;
+    --tone-bg: #1C1C1E;
   }
 }
 
@@ -85,8 +85,8 @@ body {
 .grid::-webkit-scrollbar-track { background: transparent; }
 .grid::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 3px; }
 .grid-inner {
-  width: 308px; margin: 0 auto; padding: 2px 0 10px;
-  display: grid; grid-template-columns: repeat(5, 1fr);
+  width: 312px; margin: 0 auto; padding: 2px 0 10px;
+  display: grid; grid-template-columns: repeat(6, 1fr);
 }
 .cell {
   aspect-ratio: 1;
@@ -95,7 +95,7 @@ body {
 }
 .cell .hit {
   display: flex; align-items: center; justify-content: center;
-  font-size: 33px; line-height: 1;
+  font-size: 36px; line-height: 1;
   font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
 }
 .cell:hover .hit { background: var(--accent-soft); border-radius: 12px; width: 100%; height: 100%; }
