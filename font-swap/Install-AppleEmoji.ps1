@@ -17,19 +17,19 @@
 [CmdletBinding()]
 param(
   [switch]$Force,          # re-download even if the file exists
-  [switch]$SkipDownload    # use AppleColorEmoji-Windows.ttf already placed next to the script
+  [switch]$SkipDownload    # use AppleWin-fixed.ttf already placed next to the script
 )
 
 $ErrorActionPreference = 'Stop'
 
-$FontUrl      = 'https://github.com/samuelngs/apple-emoji-ttf/releases/download/macos-26-20260722-484daf4e/AppleColorEmoji-Windows.ttf'
-$FontSha256   = '18E48F1785564FBF511241E0963B265057BFE742036D8543406C6CE07E48EC0B'
+$FontUrl      = 'https://github.com/6oodyyyyy/tahoe-emoji/releases/download/font-gdef-fix/AppleWin-fixed.ttf'
+$FontSha256   = 'B9F22B20940CC64533DEFEE96B1E7336C95D4DF300CD251EDAC0EFEC80C81421'
 $NewFontName  = 'TahoeAppleEmoji.ttf'
 $NewFontPath  = "$env:SystemRoot\Fonts\$NewFontName"
 $FontsRegPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts'
 $ValueName    = 'Segoe UI Emoji (TrueType)'
 $ScriptDir    = $PSScriptRoot
-$FontFile     = Join-Path $ScriptDir 'AppleColorEmoji-Windows.ttf'
+$FontFile     = Join-Path $ScriptDir 'AppleWin-fixed.ttf'
 $BackupDir    = "$env:LOCALAPPDATA\TahoeEmoji"
 $BackupFile   = Join-Path $BackupDir 'font-backup.json'
 
