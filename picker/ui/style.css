@@ -13,12 +13,12 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --panel-bg: #1C1C1E;
-    --search-bg: #2C2C2E;
+    --panel-bg: #000000;
+    --search-bg: #1C1C1E;
     --icon-gray: #98989D;
     --placeholder: #6E6E73;
     --text: #F2F2F2;
-    --tone-bg: #1C1C1E;
+    --tone-bg: #000000;
   }
 }
 
@@ -34,16 +34,15 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 364px; height: 700px; overflow: hidden; background: transparent; }
+html, body { width: 360px; height: 480px; overflow: hidden; background: transparent; }
 body {
   font-family: "Inter", "Segoe UI", system-ui, sans-serif;
   -webkit-user-select: none; user-select: none;
 }
 
-.stage { position: relative; width: 364px; height: 700px; }
+.stage { position: relative; width: 360px; height: 480px; }
 .panel-wrap {
-  position: absolute; left: 14px; top: 12px; width: 336px;
-  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.30));
+  position: absolute; left: 12px; top: 10px; width: 336px;
 }
 .nub {
   width: 24px; height: 10px; margin: 0 auto -1px;
@@ -51,11 +50,12 @@ body {
   clip-path: polygon(0 100%, 50% 0, 100% 100%);
 }
 .panel {
-  width: 336px; height: 672px;
+  width: 336px; height: 458px;
   background: var(--panel-bg);
   border-radius: 18px;
   display: flex; flex-direction: column;
   overflow: hidden; position: relative;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* ---- search ---- */
@@ -95,7 +95,7 @@ body {
 }
 .cell .hit {
   display: flex; align-items: center; justify-content: center;
-  font-size: 36px; line-height: 1;
+  font-size: 40px; line-height: 1;
   font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
 }
 .cell:hover .hit { background: var(--accent-soft); border-radius: 12px; width: 100%; height: 100%; }
@@ -130,4 +130,4 @@ body {
   padding: 5px; display: flex; gap: 2px;
 }
 .tone-pop .cell { width: 46px; height: 46px; aspect-ratio: auto; }
-.tone-pop .cell .hit { font-size: 30px; }
+.tone-pop .cell .hit { font-size: 40px; }
