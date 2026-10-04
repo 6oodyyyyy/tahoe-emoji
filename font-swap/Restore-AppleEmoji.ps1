@@ -11,8 +11,7 @@ param()
 
 $ErrorActionPreference = 'Stop'
 
-$NewFontName  = 'TahoeAppleEmoji.ttf'
-$NewFontPath  = "$env:SystemRoot\Fonts\$NewFontName"
+$NewFontNames = @('TahoeAppleEmoji.ttf', 'TahoeAppleEmoji2.ttf')
 $FontsRegPath = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts'
 $ValueName    = 'Segoe UI Emoji (TrueType)'
 $BackupFile   = "$env:LOCALAPPDATA\TahoeEmoji\font-backup.json"
@@ -75,12 +74,18 @@ if ($previousValue) {
   Say "Registry entry '$ValueName' removed (no previous value known)." 'Yellow'
 }
 
-# ---------- 4) Unload + delete the installed font file ----------
-[void][FontRestoreApi]::RemoveFontResourceW($NewFontPath)
+# ---------- 4) Unload + delete the installed font file(s) ----------
+foreach ($fn in $NewFontNames) {
+  $fp = "$env:SystemRoot\Fonts\$fn"
+  [void][FontRestoreApi]::RemoveFontResourceW($fp)
+}
 Notify-FontChange
-if (Test-Path $NewFontPath) {
-  try { Remove-Item $NewFontPath -Force -ErrorAction Stop; Say "Removed $NewFontPath" 'Green' }
-  catch { Say "Could not delete $NewFontPath (it may be in use - it will be ignored since the registry no longer points to it)." 'Yellow' }
+foreach ($fn in $NewFontNames) {
+  $fp = "$env:SystemRoot\Fonts\$fn"
+  if (Test-Path $fp) {
+    try { Remove-Item $fp -Force -ErrorAction Stop; Say "Removed $fp" 'Green' }
+    catch { Say "Could not delete $fp (it may be in use - it will be ignored since the registry no longer points to it)." 'Yellow' }
+  }
 }
 if (Test-Path $BackupFile) { Remove-Item $BackupFile -Force -ErrorAction SilentlyContinue }
 
