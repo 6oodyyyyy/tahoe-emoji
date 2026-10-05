@@ -131,3 +131,25 @@ body {
 }
 .tone-pop .cell { width: 46px; height: 46px; aspect-ratio: auto; }
 .tone-pop .cell .hit { font-size: 40px; }
+
+/* Original Apple picker icons (from macOS CharacterPicker.framework) */
+.cat-icon-orig {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+  opacity: 0.75;
+}
+.cat.active .cat-icon-orig {
+  opacity: 1;
+}
+/* Dark mode */
+body.dark .cat-icon-orig,
+.dark .cat-icon-orig {
+  filter: invert(1);
+  opacity: 0.8;
+}
+body.dark .cat.active .cat-icon-orig,
+.dark .cat.active .cat-icon-orig {
+  opacity: 1;
+}
