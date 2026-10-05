@@ -1,0 +1,35 @@
+name: Find CharacterPicker Category Icons
+
+on:
+  workflow_dispatch:
+
+jobs:
+  find-icons:
+    runs-on: macos-latest
+    steps:
+      - name: Explore CharacterPicker.framework
+        run: |
+          FW="/System/Library/PrivateFrameworks/CharacterPicker.framework"
+          echo "=== Framework structure ==="
+          find "$FW" -type f | head -50
+          
+          echo ""
+          echo "=== All .car files ==="
+          find "$FW" -name "*.car" 2>/dev/null
+          
+          echo ""
+          echo "=== Resources directory ==="
+          ls -lh "$FW/Versions/A/Resources/" 2>/dev/null | head -30
+          
+          echo ""
+          echo "=== Search for icon files ==="
+          find "$FW" -iname "*clock*" -o -iname "*smiley*" -o -iname "*category*" 2>/dev/null | head -20
+
+      - name: Check for icons in binary
+        run: |
+          FW_BIN="/System/Library/PrivateFrameworks/CharacterPicker.framework/Versions/A/CharacterPicker"
+          echo "=== Binary info ==="
+          file "$FW_BIN" 2>/dev/null | head -3
+          echo ""
+          echo "=== Strings containing icon names ==="
+          strings "$FW_BIN" 2>/dev/null | grep -i -E "clock|smiley|category" | head -20
