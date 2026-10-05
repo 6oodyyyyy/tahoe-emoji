@@ -131,3 +131,19 @@ body {
 }
 .tone-pop .cell { width: 46px; height: 46px; aspect-ratio: auto; }
 .tone-pop .cell .hit { font-size: 40px; }
+
+/* Apple original category icons (extracted from Apple) */
+.cat-icon-apple {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+  opacity: 0.65;
+}
+.cat.active .cat-icon-apple {
+  opacity: 1;
+}
+/* Dark mode: invert to make visible */
+body.dark .cat-icon-apple {
+  filter: invert(1);
+}
