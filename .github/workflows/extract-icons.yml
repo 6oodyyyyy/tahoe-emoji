@@ -1,0 +1,36 @@
+name: Extract CharacterPicker Icons
+
+on:
+  workflow_dispatch:
+
+jobs:
+  extract:
+    runs-on: macos-latest
+    steps:
+      - name: Find CharacterPicker Assets.car
+        run: |
+          CAR_PATH="/System/Library/PrivateFrameworks/CharacterPicker.framework/Versions/A/Resources/Assets.car"
+          if [ -f "$CAR_PATH" ]; then
+            echo "Found Assets.car at $CAR_PATH"
+            ls -lh "$CAR_PATH"
+            cp "$CAR_PATH" ./CharacterPicker-Assets.car
+            echo "Copied to ./CharacterPicker-Assets.car"
+          else
+            echo "Not found at $CAR_PATH, searching..."
+            find /System/Library/PrivateFrameworks/CharacterPicker.framework -name "Assets.car" 2>/dev/null | head -5
+            exit 1
+          fi
+
+      - name: Extract icon metadata
+        run: |
+          # Use assetutil to list contents (macOS built-in)
+          xcrun --sdk macosx assetutil --info ./CharacterPicker-Assets.car > asset-info.json 2>&1 || echo "assetutil info failed"
+          head -100 asset-info.json
+
+      - name: Upload Assets.car
+        uses: actions/upload-artifact@v4
+        with:
+          name: characterpicker-assets
+          path: |
+            ./CharacterPicker-Assets.car
+            ./asset-info.json
